@@ -1317,7 +1317,10 @@ function Footer({ onNav }: { onNav: (s: Section) => void }) {
         <div style={{ borderTop: "1px solid rgba(255,255,255,0.08)", paddingTop: 20, display: "flex", flexDirection: "column", gap: 8, alignItems: "center", textAlign: "center" }}>
           <div style={{ fontFamily: "var(--font-body)", fontSize: "0.75rem", color: "rgba(255,255,255,0.35)" }}>
             © 2026 FM CONSULTORA RRHH · Todos los derechos reservados
-          </div>
+            {" · "}
+            <a href="/admin" style={{ color: "rgba(255,255,255,0.35)", textDecoration: "underline" }}>
+              Administrador
+            </a>          </div>
         </div>
       </div>
     </footer>
