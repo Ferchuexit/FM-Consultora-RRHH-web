@@ -854,9 +854,17 @@ function SectionSoftware({ onNav }: { onNav: (s: Section) => void }) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
-              <div className="inline-flex items-center gap-2 mb-5 px-4 py-2 rounded-full" style={{ background: "rgba(63,174,222,0.15)", border: "1px solid rgba(63,174,222,0.25)" }}>
+              <a
+                href="https://software.fmconsultorarrhh.com.ar"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 mb-5 px-4 py-2 rounded-full"
+                style={{ background: "rgba(63,174,222,0.15)", border: "1px solid rgba(63,174,222,0.25)", textDecoration: "none", cursor: "pointer" }}
+                title="Ingresar a FM Software"
+              >
                 <span style={{ fontFamily: "var(--font-display)", fontSize: "0.7rem", fontWeight: 700, color: "#29c3f5", letterSpacing: "0.1em", textTransform: "uppercase" }}>FM Software · Gestión Integral</span>
-              </div>
+                <span style={{ color: "#29c3f5", fontSize: "0.75rem" }}>↗</span>
+              </a>
               <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(2rem,4vw,3rem)", color: "white", marginBottom: 16, lineHeight: 1.1 }}>
                 El sistema de RRHH diseñado para PyMEs argentinas
               </h1>
