@@ -1362,4 +1362,4 @@ export default function PublicSite() {
       <Footer onNav={navigate} />
     </div>
   );
-}
+} 
