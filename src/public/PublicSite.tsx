@@ -858,6 +858,11 @@ function SectionSoftware({ onNav }: { onNav: (s: Section) => void }) {
                 href="https://software.fmconsultorarrhh.com.ar"
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={(e) => {
+                  if (!confirm("Vas a salir a FM Software — el sistema real de liquidación, con acceso restringido a usuarios autorizados. ¿Continuar?")) {
+                    e.preventDefault();
+                  }
+                }}
                 className="inline-flex items-center gap-2 mb-5 px-4 py-2 rounded-full"
                 style={{ background: "rgba(63,174,222,0.15)", border: "1px solid rgba(63,174,222,0.25)", textDecoration: "none", cursor: "pointer" }}
                 title="Ingresar a FM Software"
@@ -964,7 +969,6 @@ const TIPO_COLOR: Record<string, { bg: string; color: string }> = {
   "Novedad": { bg: "rgba(251,191,36,0.14)", color: "#92400e" },
   "Video": { bg: "rgba(239,68,68,0.1)", color: "#991b1b" },
 };
-
 function useNovedadesPublicadas() {
   const [novedades, setNovedades] = useState<import("@/lib/types").Novedad[]>([]);
   const [loading, setLoading] = useState(true);
@@ -990,8 +994,19 @@ function useNovedadesPublicadas() {
   return { novedades, loading };
 }
 
+// Extrae el ID numérico del video de una URL de TikTok típica
+// (https://www.tiktok.com/@usuario/video/1234567890123456789) para poder
+// armar el link de embed oficial (tiktok.com/embed/v2/ID). Si no lo
+// encuentra, devuelve null y el video se abre en TikTok en vez de
+// incrustarse — mejor eso que un embed roto.
+function idDeVideoTikTok(url: string): string | null {
+  const match = url.match(/\/video\/(\d+)/);
+  return match ? match[1] : null;
+}
+
 function SectionNovedades() {
   const { novedades, loading } = useNovedadesPublicadas();
+  const [videoAbierto, setVideoAbierto] = useState<string | null>(null);
 
   return (
     <div style={{ paddingTop: 64 }}>
@@ -1017,7 +1032,12 @@ function SectionNovedades() {
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {novedades.map(n => (
-              <div key={n.id} className="card-hover bg-white rounded-2xl overflow-hidden" style={{ border: "1px solid #eef1f6" }}>
+              <div
+                key={n.id}
+                className="card-hover bg-white rounded-2xl overflow-hidden"
+                style={{ border: "1px solid #eef1f6", cursor: n.video_url ? "pointer" : "default" }}
+                onClick={() => n.video_url && setVideoAbierto(n.video_url)}
+              >
                 <div style={{ position: "relative", height: 180, background: "#dde3ed" }}>
                   {n.imagen_url && (
                     <img src={n.imagen_url} alt={n.titulo} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
@@ -1045,10 +1065,46 @@ function SectionNovedades() {
           </div>
         </div>
       </section>
+
+      {/* Modal con el video incrustado — TikTok necesita su formato de
+          embed propio (tiktok.com/embed/v2/ID), no cualquier link sirve
+          directo dentro de un iframe. */}
+      {videoAbierto && (
+        <div
+          onClick={() => setVideoAbierto(null)}
+          style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.85)", zIndex: 100, display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}
+        >
+          <div onClick={(e) => e.stopPropagation()} style={{ position: "relative", width: "100%", maxWidth: 340 }}>
+            <button
+              onClick={() => setVideoAbierto(null)}
+              style={{ position: "absolute", top: -40, right: 0, background: "none", border: "none", color: "white", fontSize: "1.8rem", cursor: "pointer", lineHeight: 1 }}
+              aria-label="Cerrar"
+            >
+              ×
+            </button>
+            {idDeVideoTikTok(videoAbierto) ? (
+              <iframe
+                src={`https://www.tiktok.com/embed/v2/${idDeVideoTikTok(videoAbierto)}`}
+                style={{ width: "100%", height: 578, border: "none", borderRadius: 12, background: "white" }}
+                allow="autoplay; encrypted-media; fullscreen"
+                title="Video de TikTok"
+              />
+            ) : (
+              // No pudimos reconocer el formato del link — mejor mandar a
+              // TikTok que mostrar un embed roto.
+              <div style={{ background: "white", borderRadius: 12, padding: 24, textAlign: "center" }}>
+                <p style={{ marginBottom: 16, color: "#334155" }}>No pudimos incrustar este video.</p>
+                <a href={videoAbierto} target="_blank" rel="noopener noreferrer" className="btn-primary px-5 py-2.5 text-sm" style={{ textDecoration: "none" }}>
+                  Ver en TikTok
+                </a>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
-
 // ─── SECTION: CLIENTES ───────────────────────────────────────────────────────
 
 const TESTIMONIOS = [
@@ -1362,4 +1418,4 @@ export default function PublicSite() {
       <Footer onNav={navigate} />
     </div>
   );
-} 
+}
