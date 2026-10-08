@@ -64,6 +64,13 @@ function IconWhatsApp() {
     </svg>
   );
 }
+function IconInstagram() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2" y="2" width="20" height="20" rx="5" /><circle cx="12" cy="12" r="4" /><line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+    </svg>
+  );
+}
 function IconMail() {
   return (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -1183,7 +1190,7 @@ function SectionClientes({ onNav }: { onNav: (s: Section) => void }) {
 // ─── SECTION: CONTACTO ───────────────────────────────────────────────────────
 
 function SectionContacto() {
-  const { config, whatsappLink, whatsappDisplay } = useConfiguracion();
+  const { config, whatsappLink, whatsappDisplay, instagramLink, instagramDisplay } = useConfiguracion();
   const [form, setForm] = useState({ nombre: "", empresa: "", email: "", telefono: "", motivo: "", mensaje: "", sent: false });
   const [enviando, setEnviando] = useState(false);
   const [errorEnvio, setErrorEnvio] = useState<string | null>(null);
@@ -1250,6 +1257,19 @@ function SectionContacto() {
                   <div style={{ fontSize: "0.72rem", color: "#94a3b8" }}>Respondemos en 24 hs</div>
                 </div>
               </a>
+
+              {instagramLink() && (
+                <a href={instagramLink()} target="_blank" rel="noopener noreferrer" className="card-hover flex items-center gap-4 p-4 rounded-xl mb-4 bg-white" style={{ border: "1px solid #eef1f6", textDecoration: "none" }}>
+                  <div style={{ width: 48, height: 48, borderRadius: 14, background: "#fce7f3", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <span style={{ color: "#c2255c" }}><IconInstagram /></span>
+                  </div>
+                  <div>
+                    <div style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: "0.9rem", color: "#0d1f4e" }}>Instagram</div>
+                    <div style={{ fontFamily: "var(--font-body)", fontSize: "0.83rem", color: "#1b3468", fontWeight: 600 }}>{instagramDisplay()}</div>
+                    <div style={{ fontSize: "0.72rem", color: "#94a3b8" }}>Seguinos para novedades</div>
+                  </div>
+                </a>
+              )}
 
               <div className="p-5 rounded-xl mt-6" style={{ background: "linear-gradient(135deg,#0d1f4e,#1b3468)" }}>
                 <div style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: "0.95rem", color: "white", marginBottom: 8 }}>¿Querés conocer FM Software?</div>
@@ -1326,7 +1346,7 @@ function SectionContacto() {
 // ─── FOOTER ──────────────────────────────────────────────────────────────────
 
 function Footer({ onNav }: { onNav: (s: Section) => void }) {
-  const { config, whatsappLink, whatsappDisplay } = useConfiguracion();
+  const { config, whatsappLink, whatsappDisplay, instagramLink, instagramDisplay } = useConfiguracion();
 
   return (
     <footer style={{ background: "#0d1f4e", padding: "56px 0 24px" }}>
@@ -1344,6 +1364,11 @@ function Footer({ onNav }: { onNav: (s: Section) => void }) {
               <a href={`mailto:${config.email_contacto}`} style={{ width: 36, height: 36, borderRadius: 10, background: "rgba(255,255,255,0.08)", display: "flex", alignItems: "center", justifyContent: "center", color: "rgba(255,255,255,0.7)", transition: "all 0.2s" }}>
                 <IconMail />
               </a>
+              {instagramLink() && (
+                <a href={instagramLink()} target="_blank" rel="noopener noreferrer" aria-label="Instagram" style={{ width: 36, height: 36, borderRadius: 10, background: "rgba(255,255,255,0.08)", display: "flex", alignItems: "center", justifyContent: "center", color: "rgba(255,255,255,0.7)", transition: "all 0.2s" }}>
+                  <IconInstagram />
+                </a>
+              )}
             </div>
           </div>
 
@@ -1374,6 +1399,11 @@ function Footer({ onNav }: { onNav: (s: Section) => void }) {
               <a href={`mailto:${config.email_contacto}`} className="flex items-start gap-2" style={{ fontFamily: "var(--font-body)", fontSize: "0.83rem", color: "rgba(255,255,255,0.55)", textDecoration: "none" }}>
                 <span style={{ marginTop: 2 }}><IconMail /></span> {config.email_contacto}
               </a>
+              {instagramLink() && (
+                <a href={instagramLink()} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2" style={{ fontFamily: "var(--font-body)", fontSize: "0.83rem", color: "rgba(255,255,255,0.55)", textDecoration: "none" }}>
+                  <IconInstagram /> {instagramDisplay()}
+                </a>
+              )}
             </div>
           </div>
         </div>
