@@ -22,7 +22,8 @@ export function useConfiguracion() {
         if (data && data.length > 0) {
           const map: Record<string, string> = { ...DEFAULTS };
           for (const row of data as { clave: string; valor: string | null }[]) {
-            if (row.valor) map[row.clave] = row.valor;
+            // Normalizamos la clave ("Instagram ", "INSTAGRAM" -> "instagram") para que no dependa de cómo se tipeó.
+            if (row.valor && row.clave) map[row.clave.trim().toLowerCase()] = row.valor.trim();
           }
           setConfig(map);
         }
@@ -47,5 +48,25 @@ export function useConfiguracion() {
     return config.whatsapp ?? DEFAULTS.whatsapp;
   }
 
-  return { config, loading, whatsappLink, whatsappDisplay };
+  /** Usuario de Instagram sin "@" ni URL. Acepta "@usuario", "usuario" o el link completo. Vacío si no está cargado. */
+  function instagramUser() {
+    const raw = (config.instagram ?? config.instagram_url ?? config.ig ?? "").trim();
+    if (!raw) return "";
+    const fromUrl = raw.match(/instagram\.com\/([^/?#\s]+)/i);
+    return (fromUrl ? fromUrl[1] : raw).replace(/^@/, "").replace(/\/+$/, "");
+  }
+
+  /** Link al perfil de Instagram, o "" si no está cargado. */
+  function instagramLink() {
+    const user = instagramUser();
+    return user ? `https://www.instagram.com/${user}/` : "";
+  }
+
+  /** "@usuario" para mostrar en pantalla, o "" si no está cargado. */
+  function instagramDisplay() {
+    const user = instagramUser();
+    return user ? `@${user}` : "";
+  }
+
+  return { config, loading, whatsappLink, whatsappDisplay, instagramLink, instagramDisplay };
 }
